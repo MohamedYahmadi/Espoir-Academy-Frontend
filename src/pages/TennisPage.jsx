@@ -4,8 +4,7 @@ import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
 import { motion } from 'framer-motion';
 import { Check, Circle, Activity } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import AuthAwareCTA from '@/components/AuthAwareCTA';
 
 const TennisPage = () => {
   return (
@@ -36,11 +35,9 @@ const TennisPage = () => {
                         ACADÉMIE TENNIS
                     </motion.h1>
                     <p className="text-xl text-yellow-400 font-medium mb-8">Élégance • Précision • Performance</p>
-                    <Link to="/contact">
-                        <Button className="bg-yellow-400 hover:bg-yellow-500 text-green-900 font-bold px-8 py-6 rounded-full">
-                            Réserver un court
-                        </Button>
-                    </Link>
+                    <AuthAwareCTA to="/contact" className="bg-yellow-400 hover:bg-yellow-500 text-green-900 font-bold px-8 py-6 rounded-full">
+                        Réserver un court
+                    </AuthAwareCTA>
                 </div>
             </div>
         </div>

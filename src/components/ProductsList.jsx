@@ -1,3 +1,9 @@
+// ============================================================
+// BOUTIQUE FEATURE - DISABLED (commented out)
+// This file is preserved for future re-enabling.
+// To re-enable: uncomment the StorePage import + route in App.jsx
+// and the "Boutique" nav links in Header.jsx.
+// ============================================================
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';

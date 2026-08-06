@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -18,12 +18,41 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
+  // ============================================================
+  // BOUTIQUE / CART FEATURE - DISABLED (commented out)
+  // To re-enable: uncomment the localStorage initialization below
+  // and the persistence useEffect further down.
+  // ============================================================
+  // // Initialize state from localStorage or default
+  // const [cartItems, setCartItems] = useState(() => {
+  //   try {
+  //     const savedCart = localStorage.getItem('cartItems');
+  //     return savedCart ? JSON.parse(savedCart) : [];
+  //   } catch (error) {
+  //     console.error("Failed to load cart from local storage", error);
+  //     return [];
+  //   }
+  // });
+
   // Cart state is in-memory only (no localStorage persistence)
   const [cartItems, setCartItems] = useState([]);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
+
+  // ============================================================
+  // BOUTIQUE / CART FEATURE - DISABLED (commented out)
+  // To re-enable: uncomment this useEffect to persist cart to localStorage
+  // ============================================================
+  // // Persist to localStorage whenever cartItems changes
+  // useEffect(() => {
+  //   try {
+  //     localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  //   } catch (error) {
+  //     console.error("Failed to save cart to local storage", error);
+  //   }
+  // }, [cartItems]);
 
   const addToCart = (product, variant, quantity = 1, maxStock = 100) => {
     setCartItems(prevItems => {

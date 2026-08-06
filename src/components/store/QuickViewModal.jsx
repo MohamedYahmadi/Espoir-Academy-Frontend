@@ -1,3 +1,9 @@
+// ============================================================
+// BOUTIQUE FEATURE - DISABLED (commented out)
+// This file is preserved for future re-enabling.
+// To re-enable: uncomment the StorePage import + route in App.jsx
+// and the "Boutique" nav links in Header.jsx.
+// ============================================================
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';

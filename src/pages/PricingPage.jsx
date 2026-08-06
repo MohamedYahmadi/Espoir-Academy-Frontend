@@ -3,8 +3,7 @@ import { Helmet } from 'react-helmet';
 import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
 import { Check, Trophy, Activity, Dumbbell } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import AuthAwareCTA from '@/components/AuthAwareCTA';
 import { getSports } from '@/api/AcademyApi';
 
 const SPORT_ICONS = {
@@ -17,6 +16,14 @@ const SPORT_COLORS = {
   'football': { icon: 'text-green-600', bg: 'bg-green-100', border: 'hover:border-green-500', btn: 'border-green-600 text-green-600 hover:bg-green-50', check: 'text-green-500' },
   'basketball': { icon: 'text-orange-600', bg: 'bg-orange-100', border: 'hover:border-orange-500', btn: 'bg-orange-600 hover:bg-orange-700 text-white', check: 'text-orange-500' },
   'tennis': { icon: 'text-yellow-500', bg: 'bg-yellow-500/20', border: 'hover:border-yellow-500', btn: 'bg-yellow-500 text-black hover:bg-yellow-400', check: 'text-yellow-500' },
+};
+
+const getSportKey = (sport) => {
+  const name = (sport.name || '').toLowerCase();
+  if (name.includes('foot') || name.includes('كرة القدم') || name.includes('football')) return 'football';
+  if (name.includes('basket') || name.includes('كرة السلة') || name.includes('basketball')) return 'basketball';
+  if (name.includes('tennis') || name.includes('تنس') || name.includes('tennis')) return 'tennis';
+  return 'football';
 };
 
 const PricingPage = () => {
@@ -38,19 +45,11 @@ const PricingPage = () => {
     }
   };
 
-  const getSportKey = (sport) => {
-    const name = (sport.nameLatin || sport.name || '').toLowerCase();
-    if (name.includes('foot')) return 'football';
-    if (name.includes('basket')) return 'basketball';
-    if (name.includes('tennis')) return 'tennis';
-    return 'football';
-  };
-
   return (
     <>
       <Helmet>
-        <title>Tarifs & Inscriptions - ESPOIRS ACADEMY</title>
-        <meta name="description" content="Découvrez nos formules pour le Football, Basketball et Tennis. Des tarifs adaptés à tous les niveaux." />
+        <title>Tarifs & Inscriptions - Espoirs Academy</title>
+        <meta name="description" content="Découvrez nos programmes d'entraînement pour les différents sports." />
       </Helmet>
       <div className="bg-white min-h-screen flex flex-col">
         <Header />
@@ -63,9 +62,9 @@ const PricingPage = () => {
                   className="w-24 h-24 object-contain drop-shadow-md"
                />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Nos Académies Sportives</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Programmes Sportifs</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Choisissez votre sport et rejoignez l'élite. Des programmes conçus pour la progression et le plaisir.
+                Choisissez votre sport et rejoignez l'élite. Des programmes conçus pour le développement et l'excellence.
             </p>
         </div>
 
@@ -100,9 +99,7 @@ const PricingPage = () => {
                       <div className="text-5xl font-bold text-gray-900 mb-6">
                         {sport.price} <span className="text-lg text-gray-500 font-normal">DT / mois</span>
                       </div>
-                      <Link to="/contact" className="mt-auto">
-                        <Button variant="outline" className={`w-full mb-8 ${colors.btn}`}>S'inscrire</Button>
-                      </Link>
+                      <AuthAwareCTA to="/children" variant="outline" className={`w-full mb-8 mt-auto ${colors.btn}`}>S'inscrire</AuthAwareCTA>
                       <ul className="space-y-4 text-sm">
                         {sport.description && (
                           <li className="flex items-start"><Check className={`h-5 w-5 ${colors.check} mr-3 flex-shrink-0 mt-0.5`} /> {sport.description}</li>
@@ -124,15 +121,15 @@ const PricingPage = () => {
                 <div className="space-y-6 text-left bg-gray-50 p-8 rounded-xl border border-gray-200">
                     <div>
                         <h4 className="font-bold text-lg mb-2">Frais d'inscription annuels</h4>
-                        <p className="text-gray-600">Des frais de dossier et d'assurance de <span className="font-bold text-black">30 DT</span> sont payables une seule fois par an lors de l'inscription initiale.</p>
+                        <p className="text-gray-600">Frais de dossier et assurance <span className="font-bold text-black">30 DT</span> payables une fois par an lors de la première inscription.</p>
                     </div>
                     <div className="border-t border-gray-200 pt-4">
-                        <h4 className="font-bold text-lg mb-2">Réductions Famille</h4>
-                        <p className="text-gray-600">Inscrivez plusieurs enfants et bénéficiez de réductions : <span className="font-bold text-green-600">-10%</span> pour le 2ème enfant et <span className="font-bold text-green-600">-20%</span> à partir du 3ème.</p>
+                        <h4 className="font-bold text-lg mb-2">Réductions Familiales</h4>
+                        <p className="text-gray-600">Inscrivez plusieurs enfants et bénéficiez de réductions : <span className="font-bold text-green-600">-10%</span> pour le deuxième enfant et <span className="font-bold text-green-600">-20%</span> à partir du troisième enfant.</p>
                     </div>
                     <div className="border-t border-gray-200 pt-4">
-                        <h4 className="font-bold text-lg mb-2">Mode de paiement</h4>
-                        <p className="text-gray-600">Le paiement s'effectue au début de chaque mois. Possibilité de paiement trimestriel avec <span className="font-bold text-black">5% de remise</span>.</p>
+                        <h4 className="font-bold text-lg mb-2">Mode de Paiement</h4>
+                        <p className="text-gray-600">Le paiement s'effectue au début de chaque mois. Possibilité de paiement trimestriel avec une <span className="font-bold text-black">réduction de 5%</span>.</p>
                     </div>
                 </div>
             </div>

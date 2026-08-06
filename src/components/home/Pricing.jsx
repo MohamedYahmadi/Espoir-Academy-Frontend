@@ -1,8 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import AuthAwareCTA from '@/components/AuthAwareCTA';
 
 const Pricing = () => {
   const plans = [
@@ -104,17 +103,16 @@ const Pricing = () => {
                   ))}
                 </ul>
                 
-                <Link to="/contact">
-                  <Button
-                    className={`w-full ${
-                      plan.popular
-                        ? 'bg-red-600 hover:bg-red-700 text-white'
-                        : 'bg-gray-900 hover:bg-gray-800 text-white'
-                    }`}
-                  >
-                    Choisir ce plan
-                  </Button>
-                </Link>
+                <AuthAwareCTA
+                  to="/children"
+                  className={`w-full ${
+                    plan.popular
+                      ? 'bg-red-600 hover:bg-red-700 text-white'
+                      : 'bg-gray-900 hover:bg-gray-800 text-white'
+                  }`}
+                >
+                  Choisir ce plan
+                </AuthAwareCTA>
               </div>
             </motion.div>
           ))}

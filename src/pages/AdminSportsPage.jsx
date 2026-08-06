@@ -19,7 +19,6 @@ const AdminSportsPage = () => {
   const [editingSport, setEditingSport] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    nameLatin: '',
     price: '',
     description: '',
     maxCapacity: '',
@@ -45,7 +44,7 @@ const AdminSportsPage = () => {
     } catch (error) {
       toast({
         title: "Erreur",
-        description: "Impossible de charger les sports.",
+        description: "Échec du chargement des sports.",
         variant: "destructive",
       });
     } finally {
@@ -76,7 +75,7 @@ const AdminSportsPage = () => {
     } catch (error) {
       toast({
         title: "Erreur",
-        description: error.message || "Impossible de sauvegarder le sport.",
+        description: error.message || "Échec de la sauvegarde du sport.",
         variant: "destructive",
       });
     }
@@ -86,7 +85,6 @@ const AdminSportsPage = () => {
     setEditingSport(sport);
     setFormData({
       name: sport.name,
-      nameLatin: sport.nameLatin || '',
       price: sport.price.toString(),
       description: sport.description || '',
       maxCapacity: sport.maxCapacity.toString(),
@@ -108,7 +106,7 @@ const AdminSportsPage = () => {
     } catch (error) {
       toast({
         title: "Erreur",
-        description: error.message || "Impossible de supprimer le sport.",
+        description: error.message || "Échec de la suppression du sport.",
         variant: "destructive",
       });
     }
@@ -117,7 +115,6 @@ const AdminSportsPage = () => {
   const resetForm = () => {
     setFormData({
       name: '',
-      nameLatin: '',
       price: '',
       description: '',
       maxCapacity: '',
@@ -147,8 +144,8 @@ const AdminSportsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Gestion des Sports - Administration</title>
-        <meta name="description" content="Gérer les sports" />
+        <title>Gestion des sports - Administration</title>
+        <meta name="description" content="Gestion des sports" />
       </Helmet>
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
@@ -164,7 +161,7 @@ const AdminSportsPage = () => {
               </Link>
               <div className="flex justify-between items-center">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">Gestion des Sports</h1>
+                  <h1 className="text-4xl font-bold text-gray-900 mb-2">Gestion des sports</h1>
                   <p className="text-lg text-gray-600">Ajouter, modifier ou supprimer des sports</p>
                 </div>
                 <Button
@@ -172,7 +169,7 @@ const AdminSportsPage = () => {
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
                   <Plus className="h-5 w-5 mr-2" />
-                  Nouveau Sport
+                  Nouveau sport
                 </Button>
               </div>
             </div>
@@ -184,28 +181,18 @@ const AdminSportsPage = () => {
                 className="bg-white rounded-xl shadow-md p-8 border border-gray-100 mb-8"
               >
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  {editingSport ? 'Modifier le Sport' : 'Nouveau Sport'}
+                  {editingSport ? 'Modifier le sport' : 'Nouveau sport'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Nom (Arabe)</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="nameLatin">Nom (Latin)</Label>
-                      <Input
-                        id="nameLatin"
-                        value={formData.nameLatin}
-                        onChange={(e) => setFormData({ ...formData, nameLatin: e.target.value })}
-                        required
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nom du sport (ex: tennis/تنس)</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="tennis/تنس"
+                      required
+                    />
                   </div>
 
                   <div className="space-y-2">
@@ -214,14 +201,16 @@ const AdminSportsPage = () => {
                       id="description"
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder="Description du programme..."
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:border-red-500 focus:ring-red-500"
                       rows={3}
+                      required
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="price">Prix (TND)</Label>
+                      <Label htmlFor="price">Prix (DT)</Label>
                       <Input
                         id="price"
                         type="number"
@@ -231,7 +220,7 @@ const AdminSportsPage = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="maxCapacity">Capacité Max</Label>
+                      <Label htmlFor="maxCapacity">Capacité maximale</Label>
                       <Input
                         id="maxCapacity"
                         type="number"
@@ -241,35 +230,33 @@ const AdminSportsPage = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="scheduleInfo">Horaire</Label>
+                      <Label htmlFor="scheduleInfo">Horaires</Label>
                       <Input
                         id="scheduleInfo"
                         value={formData.scheduleInfo}
                         onChange={(e) => setFormData({ ...formData, scheduleInfo: e.target.value })}
-                        placeholder="Ex: Mon/Wed/Fri - 16:00"
+                        placeholder="Ex: Lundi/Mercredi/Vendredi - 16:00"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="minAge">Âge Minimum</Label>
+                      <Label htmlFor="minAge">Âge minimum</Label>
                       <Input
                         id="minAge"
                         type="number"
                         value={formData.minAge}
                         onChange={(e) => setFormData({ ...formData, minAge: e.target.value })}
-                        required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="maxAge">Âge Maximum</Label>
+                      <Label htmlFor="maxAge">Âge maximum</Label>
                       <Input
                         id="maxAge"
                         type="number"
                         value={formData.maxAge}
                         onChange={(e) => setFormData({ ...formData, maxAge: e.target.value })}
-                        required
                       />
                     </div>
                   </div>
@@ -319,11 +306,13 @@ const AdminSportsPage = () => {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-1">{sport.name}</h3>
-                  <p className="text-gray-600 text-sm mb-2">{sport.nameLatin}</p>
+                  {sport.nameLatin && (
+                    <p className="text-gray-600 text-sm mb-2">{sport.nameLatin}</p>
+                  )}
                   <p className="text-gray-600 text-sm mb-4">{sport.description}</p>
                   <div className="space-y-1 text-sm text-gray-500">
-                    <p>💰 {sport.price} TND</p>
-                    <p>👥 Max {sport.maxCapacity} enfants</p>
+                    <p>💰 {sport.price} DT</p>
+                    <p>👥 Max {sport.maxCapacity} participants</p>
                     <p>📅 {sport.scheduleInfo}</p>
                     <p>🎂 Âge: {sport.minAge} - {sport.maxAge} ans</p>
                   </div>

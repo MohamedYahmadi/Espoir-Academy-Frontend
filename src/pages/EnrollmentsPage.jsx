@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { getSports, createEnrollment } from '@/api/AcademyApi';
+import { getSports, getChildById, createEnrollment } from '@/api/AcademyApi';
 import { useAuth } from '@/hooks/useAuth';
 import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
-import { Trophy, Calendar, ChevronRight, AlertCircle } from 'lucide-react';
+import { Trophy, Calendar, ChevronRight, AlertCircle, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+
+const DAY_LABELS = {
+  Monday: 'Lundi',
+  Tuesday: 'Mardi',
+  Wednesday: 'Mercredi',
+  Thursday: 'Jeudi',
+  Friday: 'Vendredi',
+  Saturday: 'Samedi',
+  Sunday: 'Dimanche',
+};
 
 const EnrollmentsPage = () => {
   const { childId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [child, setChild] = useState(null);
   const [sports, setSports] = useState([]);
   const [selectedSport, setSelectedSport] = useState('');
   const [schedule, setSchedule] = useState({ day: 'Monday', startTime: '16:00', endTime: '17:30' });
@@ -23,20 +37,24 @@ const EnrollmentsPage = () => {
 
   useEffect(() => {
     if (!user) {
-      window.location.href = '/login';
+      navigate('/login', { state: { from: { pathname: location.pathname } } });
       return;
     }
-    fetchSports();
-  }, [user]);
+    fetchData();
+  }, [user, childId, navigate, location.pathname]);
 
-  const fetchSports = async () => {
+  const fetchData = async () => {
     try {
-      const data = await getSports();
-      setSports(data.data || []);
+      const [sportsData, childData] = await Promise.all([
+        getSports(),
+        getChildById(childId),
+      ]);
+      setSports(sportsData.data || []);
+      setChild(childData.data || null);
     } catch (error) {
       toast({
         title: "Erreur",
-        description: "Impossible de charger les sports.",
+        description: error.message || "Impossible de charger les données.",
         variant: "destructive",
       });
     } finally {
@@ -44,8 +62,36 @@ const EnrollmentsPage = () => {
     }
   };
 
+  const docs = child?.documents || {};
+  const requiredDocs = [
+    { key: 'photoUrl', label: "Photo d'identité" },
+    { key: 'birthCertificateUrl', label: 'Acte de naissance' },
+    { key: 'medicalCertificateUrl', label: 'Certificat médical' },
+  ];
+  const missingDocs = requiredDocs.filter((doc) => !docs[doc.key]);
+  const requiredDocsComplete = missingDocs.length === 0;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!requiredDocsComplete) {
+      toast({
+        title: "Documents manquants",
+        description: "Veuillez télécharger tous les documents requis avant l'inscription.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!selectedSport) {
+      toast({
+        title: "Sélection requise",
+        description: "Veuillez choisir un sport.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -58,7 +104,7 @@ const EnrollmentsPage = () => {
         title: "Inscription réussie ! 🎉",
         description: "Votre demande d'inscription a été soumise.",
       });
-      window.location.href = `/children/${childId}`;
+      navigate(`/children/${childId}`);
     } catch (error) {
       toast({
         title: "Erreur",
@@ -106,7 +152,62 @@ const EnrollmentsPage = () => {
                 Retour au profil
               </Link>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Inscription à un sport</h1>
-              <p className="text-lg text-gray-600">Choisissez le sport et l'horaire souhaités</p>
+              <p className="text-lg text-gray-600">
+                {child
+                  ? `Inscrire ${child.firstName} ${child.lastName}`
+                  : 'Choisissez le sport et l\'horaire souhaités'}
+              </p>
+            </motion.div>
+
+            {/* Documents checklist */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className={`rounded-2xl p-6 border mb-6 ${
+                requiredDocsComplete ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'
+              }`}
+            >
+              <div className="flex items-start gap-3 mb-4">
+                {requiredDocsComplete ? (
+                  <CheckCircle className="h-6 w-6 text-green-600 mt-0.5 flex-shrink-0" />
+                ) : (
+                  <AlertCircle className="h-6 w-6 text-yellow-600 mt-0.5 flex-shrink-0" />
+                )}
+                <div>
+                  <h3 className="font-bold text-gray-900">Documents requis</h3>
+                  <p className="text-sm text-gray-600">
+                    {requiredDocsComplete
+                      ? 'Tous les documents sont disponibles. Vous pouvez procéder à l\'inscription.'
+                      : 'Certains documents sont manquants. Ils sont obligatoires pour inscrire votre enfant à un sport.'}
+                  </p>
+                </div>
+              </div>
+
+              <ul className="space-y-2 mb-4">
+                {requiredDocs.map((doc) => (
+                  <li key={doc.key} className="flex items-center text-sm">
+                    {docs[doc.key] ? (
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="h-5 w-5 text-red-500 mr-2 flex-shrink-0" />
+                    )}
+                    <span className={docs[doc.key] ? 'text-gray-700' : 'text-gray-600 font-medium'}>
+                      {doc.label}
+                    </span>
+                    {!docs[doc.key] && <span className="text-red-600 ml-1">(manquant)</span>}
+                  </li>
+                ))}
+              </ul>
+
+              {!requiredDocsComplete && (
+                <Link to={`/children/${childId}/edit`}>
+                  <Button className="bg-red-600 hover:bg-red-700 text-white">
+                    <FileText className="h-5 w-5 mr-2" />
+                    Compléter les documents
+                  </Button>
+                </Link>
+              )}
             </motion.div>
 
             <motion.div
@@ -168,7 +269,7 @@ const EnrollmentsPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-4 pt-6 border-t border-gray-200"
                   >
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Horaire</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Horaire souhaité</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
@@ -180,13 +281,9 @@ const EnrollmentsPage = () => {
                           className="w-full h-12 px-4 border border-gray-300 rounded-md focus:border-red-500 focus:ring-red-500"
                           required
                         >
-                          <option value="Monday">Lundi</option>
-                          <option value="Tuesday">Mardi</option>
-                          <option value="Wednesday">Mercredi</option>
-                          <option value="Thursday">Jeudi</option>
-                          <option value="Friday">Vendredi</option>
-                          <option value="Saturday">Samedi</option>
-                          <option value="Sunday">Dimanche</option>
+                          {Object.entries(DAY_LABELS).map(([value, label]) => (
+                            <option key={value} value={value}>{label}</option>
+                          ))}
                         </select>
                       </div>
 
@@ -235,7 +332,7 @@ const EnrollmentsPage = () => {
                   <Button
                     type="submit"
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white h-12 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
-                    disabled={!selectedSport || submitting}
+                    disabled={!selectedSport || submitting || !requiredDocsComplete}
                   >
                     {submitting ? 'Inscription...' : "S'inscrire"}
                   </Button>

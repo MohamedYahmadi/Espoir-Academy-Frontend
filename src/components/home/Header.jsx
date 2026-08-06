@@ -1,21 +1,50 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, ChevronDown, User, LogOut, Settings, LayoutDashboard, CreditCard, Users, Mail, Shield } from 'lucide-react';
+// ============================================================
+// BOUTIQUE / CART FEATURE - DISABLED (commented out)
+// To re-enable: uncomment the useCart import and the cart-related
+// code marked with the same banner below.
+// ============================================================
+// import { Menu, X, ShoppingBag, ChevronDown, User, LogOut, Settings, LayoutDashboard, CreditCard, Users, Mail, Shield } from 'lucide-react';
+import { Menu, X, ChevronDown, User, LogOut, Settings, LayoutDashboard, CreditCard, Users, Mail, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCart } from '@/hooks/useCart';
+// import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
+import { getSports } from '@/api/AcademyApi';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSportsOpen, setIsSportsOpen] = useState(false);
+  const [sports, setSports] = useState([]);
   const dropdownRef = useRef(null);
   const location = useLocation();
-  const { cartItems, toggleCart } = useCart();
+  // ============================================================
+  // BOUTIQUE / CART FEATURE - DISABLED (commented out)
+  // To re-enable: uncomment the useCart hook usage below
+  // ============================================================
+  // const { cartItems, toggleCart } = useCart();
   const { user, logout } = useAuth();
 
-  const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  useEffect(() => {
+    fetchSports();
+  }, []);
+
+  const fetchSports = async () => {
+    try {
+      const data = await getSports();
+      setSports(data.data || []);
+    } catch (error) {
+      console.error('Failed to load sports:', error);
+    }
+  };
+
+  // ============================================================
+  // BOUTIQUE / CART FEATURE - DISABLED (commented out)
+  // To re-enable: uncomment the cartItemCount line below
+  // ============================================================
+  // const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const isActive = (path) => location.pathname === path ? "text-red-600" : "text-gray-700 hover:text-red-600";
 
   // Close dropdown when clicking outside
@@ -63,27 +92,37 @@ const Header = () => {
                 Sports <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               <div className="absolute top-full left-0 w-56 bg-white rounded-b-lg shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-50 border-t-4 border-red-600">
-                <Link to="/football" className="block px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors">Football</Link>
-                <Link to="/basketball" className="block px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors">Basketball</Link>
-                <Link to="/tennis" className="block px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors">Tennis</Link>
+                {sports.map(sport => (
+                  <Link key={sport._id} to={`/sport/${sport._id}`} className="block px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors">
+                    {sport.name} {sport.nameLatin && `(${sport.nameLatin})`}
+                  </Link>
+                ))}
               </div>
             </div>
 
             <Link to="/schedule" className={`${isActive('/schedule')} font-semibold text-sm uppercase tracking-wide transition-colors`}>Planning</Link>
             <Link to="/pricing" className={`${isActive('/pricing')} font-semibold text-sm uppercase tracking-wide transition-colors`}>Tarifs</Link>
-            <Link to="/store" className={`${isActive('/store')} font-semibold text-sm uppercase tracking-wide transition-colors`}>Boutique</Link>
+            {/* ============================================================
+                BOUTIQUE FEATURE - DISABLED (commented out)
+                To re-enable: uncomment the Boutique nav link below
+            ============================================================ */}
+            {/* <Link to="/store" className={`${isActive('/store')} font-semibold text-sm uppercase tracking-wide transition-colors`}>Boutique</Link> */}
 
             {/* Right side: Cart + User Menu */}
             <div className="pl-4 border-l border-gray-200 flex items-center gap-2">
+              {/* ============================================================
+                  BOUTIQUE / CART FEATURE - DISABLED (commented out)
+                  To re-enable: uncomment the Cart Button below
+              ============================================================ */}
               {/* Cart Button */}
-              <Button onClick={toggleCart} variant="ghost" className="relative p-2 hover:bg-red-50 rounded-full transition-all text-gray-800 hover:text-red-600">
+              {/* <Button onClick={toggleCart} variant="ghost" className="relative p-2 hover:bg-red-50 rounded-full transition-all text-gray-800 hover:text-red-600">
                 <ShoppingBag className="h-6 w-6" />
                 {cartItemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-sm ring-2 ring-white">
                     {cartItemCount}
                   </span>
                 )}
-              </Button>
+              </Button> */}
 
               {user ? (
                 /* User Hamburger Dropdown */
@@ -196,14 +235,18 @@ const Header = () => {
 
           {/* Mobile: Cart + Hamburger */}
           <div className="lg:hidden flex items-center gap-3">
-            <Button onClick={toggleCart} variant="ghost" className="relative p-2 text-gray-800">
+            {/* ============================================================
+                BOUTIQUE / CART FEATURE - DISABLED (commented out)
+                To re-enable: uncomment the mobile Cart Button below
+            ============================================================ */}
+            {/* <Button onClick={toggleCart} variant="ghost" className="relative p-2 text-gray-800">
               <ShoppingBag className="h-6 w-6" />
               {cartItemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-sm ring-2 ring-white">
                   {cartItemCount}
                 </span>
               )}
-            </Button>
+            </Button> */}
             <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -241,17 +284,21 @@ const Header = () => {
 
                 <Link to="/schedule" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Planning</Link>
                 <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Tarifs</Link>
-                <Link to="/store" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Boutique</Link>
+                {/* ============================================================
+                    BOUTIQUE FEATURE - DISABLED (commented out)
+                    To re-enable: uncomment the mobile Boutique nav link below
+                ============================================================ */}
+                {/* <Link to="/store" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Boutique</Link> */}
                 
                 {user ? (
                   <>
-                    <div className="border-t border-gray-200 my-2 pt-2">
-                      <p className="px-4 py-2 text-xs text-gray-500 uppercase tracking-wider font-semibold">Mon Compte</p>
-                    </div>
-                    <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Mon Espace</Link>
-                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Profil</Link>
-                    <Link to="/children" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Mes Enfants</Link>
-                    <Link to="/payments" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Paiements</Link>
+                  <div className="border-t border-gray-200 my-2 pt-2">
+                    <p className="px-4 py-2 text-xs text-gray-500 uppercase tracking-wider font-semibold">Mon Compte</p>
+                  </div>
+                  <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Mon Espace</Link>
+                  <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Profil</Link>
+                  <Link to="/children" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Mes Enfants</Link>
+                  <Link to="/payments" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Paiements</Link>
                     {user?.role === 'admin' && (
                       <Link to="/admin-secret-backoffice" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Administration</Link>
                     )}

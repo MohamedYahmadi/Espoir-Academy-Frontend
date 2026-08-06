@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import AuthAwareCTA from '@/components/AuthAwareCTA';
 
 const Hero = () => {
   return (
@@ -61,15 +60,9 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.8 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <Link to="/contact">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.3 }}>
-                <Button
-                  className="bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all"
-                >
-                  Rejoignez-nous
-                </Button>
-              </motion.div>
-            </Link>
+            <AuthAwareCTA to="/children" className="bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all">
+              Rejoignez-nous
+            </AuthAwareCTA>
           </motion.div>
         </div>
       </div>

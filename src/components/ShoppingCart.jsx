@@ -1,3 +1,9 @@
+// ============================================================
+// BOUTIQUE / CART FEATURE - DISABLED (commented out)
+// This file is preserved for future re-enabling.
+// To re-enable: uncomment the ShoppingCart import + usage in App.jsx
+// and the cart buttons in Header.jsx.
+// ============================================================
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag, Trash2, Plus, Minus, Tag, CheckCircle2 } from 'lucide-react';

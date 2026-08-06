@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { getSports } from '@/api/AcademyApi';
 
 const Footer = () => {
+  const [sports, setSports] = useState([]);
+
+  useEffect(() => {
+    fetchSports();
+  }, []);
+
+  const fetchSports = async () => {
+    try {
+      const data = await getSports();
+      setSports(data.data || []);
+    } catch (error) {
+      console.error('Failed to load sports:', error);
+    }
+  };
+
   return (
     <footer className="bg-black text-white border-t border-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -28,20 +44,28 @@ const Footer = () => {
             <span className="text-lg font-semibold mb-4 block">Navigation</span>
             <ul className="space-y-2">
               <li><Link to="/" className="text-gray-400 hover:text-red-600 transition-colors">Accueil</Link></li>
-              <li><Link to="/about" className="text-gray-400 hover:text-red-600 transition-colors">À Propos</Link></li>
+              <li><Link to="/about" className="text-gray-400 hover:text-red-600 transition-colors">Qui sommes-nous</Link></li>
               <li><Link to="/schedule" className="text-gray-400 hover:text-red-600 transition-colors">Planning</Link></li>
               <li><Link to="/pricing" className="text-gray-400 hover:text-red-600 transition-colors">Tarifs</Link></li>
-              <li><Link to="/store" className="text-gray-400 hover:text-red-600 transition-colors">Boutique</Link></li>
+              {/* ============================================================
+                  BOUTIQUE FEATURE - DISABLED (commented out)
+                  To re-enable: uncomment the Boutique nav link below
+              ============================================================ */}
+              {/* <li><Link to="/store" className="text-gray-400 hover:text-red-600 transition-colors">Boutique</Link></li> */}
               <li><Link to="/contact" className="text-gray-400 hover:text-red-600 transition-colors">Contact</Link></li>
             </ul>
           </div>
 
           <div>
-            <span className="text-lg font-semibold mb-4 block">Nos Sports</span>
+            <span className="text-lg font-semibold mb-4 block">Sports</span>
             <ul className="space-y-2">
-              <li><Link to="/football" className="text-gray-400 hover:text-red-600 transition-colors">Football</Link></li>
-              <li><Link to="/basketball" className="text-gray-400 hover:text-red-600 transition-colors">Basketball</Link></li>
-              <li><Link to="/tennis" className="text-gray-400 hover:text-red-600 transition-colors">Tennis</Link></li>
+              {sports.map(sport => (
+                <li key={sport._id}>
+                  <Link to={`/sport/${sport._id}`} className="text-gray-400 hover:text-red-600 transition-colors">
+                    {sport.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -77,10 +101,10 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-gray-400 text-sm">
-            &copy; 2025 ESPOIRS ACADEMY. Tous droits réservés.
+            &copy; 2025 Espoirs Academy. Tous droits réservés.
           </p>
           <p className="text-gray-600 text-xs mt-2">
-            Site créé par Bilel Amdouni
+            Site créé par Bilel Amouni
           </p>
         </div>
       </div>

@@ -169,14 +169,14 @@ const EditChildPage = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-gray-700 font-medium">Prénom</Label>
+                      <Label htmlFor="firstName" className="text-gray-700 font-medium">Prénom (ex: Jean/جون)</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <Input
                           id="firstName"
                           name="firstName"
                           type="text"
-                          placeholder="Prénom de l'enfant"
+                          placeholder="Jean/جون"
                           value={formData.firstName}
                           onChange={handleChange}
                           className="pl-10 h-12 border-gray-300 focus:border-red-500 focus:ring-red-500"
@@ -186,14 +186,14 @@ const EditChildPage = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-gray-700 font-medium">Nom</Label>
+                      <Label htmlFor="lastName" className="text-gray-700 font-medium">Nom (ex: Dupont/دوبون)</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <Input
                           id="lastName"
                           name="lastName"
                           type="text"
-                          placeholder="Nom de l'enfant"
+                          placeholder="Dupont/دوبون"
                           value={formData.lastName}
                           onChange={handleChange}
                           className="pl-10 h-12 border-gray-300 focus:border-red-500 focus:ring-red-500"

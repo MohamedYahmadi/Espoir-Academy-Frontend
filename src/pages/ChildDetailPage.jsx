@@ -10,6 +10,16 @@ import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
 import { ArrowLeft, Calendar, Trophy, Trash2, Users, Pencil } from 'lucide-react';
 
+const DAY_LABELS = {
+  Monday: 'Lundi',
+  Tuesday: 'Mardi',
+  Wednesday: 'Mercredi',
+  Thursday: 'Jeudi',
+  Friday: 'Vendredi',
+  Saturday: 'Samedi',
+  Sunday: 'Dimanche',
+};
+
 const ChildDetailPage = () => {
   const { id } = useParams();
   const [child, setChild] = useState(null);
@@ -191,6 +201,11 @@ const ChildDetailPage = () => {
                           <p className="text-gray-600 text-sm">
                             {enrollment.sportId?.scheduleInfo}
                           </p>
+                          {enrollment.schedule?.day && (
+                            <p className="text-gray-600 text-sm">
+                              Horaire choisi: {DAY_LABELS[enrollment.schedule.day] || enrollment.schedule.day} · {enrollment.schedule.startTime} - {enrollment.schedule.endTime}
+                            </p>
+                          )}
                           <p className="text-gray-500 text-sm mt-1">
                             Prix: {enrollment.sportId?.price} TND
                           </p>

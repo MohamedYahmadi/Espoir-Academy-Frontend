@@ -1,3 +1,9 @@
+// ============================================================
+// BOUTIQUE FEATURE - DISABLED (commented out)
+// This file is preserved for future re-enabling.
+// To re-enable: uncomment the StorePage import + route in App.jsx
+// and the "Boutique" nav links in Header.jsx.
+// ============================================================
 const ECOMMERCE_API_URL = "https://api-ecommerce.hostinger.com";
 const ECOMMERCE_STORE_ID = "store_01KBE1BDD2HZGPDF192MCK6VAB";
 

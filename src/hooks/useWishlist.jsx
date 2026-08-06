@@ -1,12 +1,40 @@
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
 
 const WishlistContext = createContext();
+
+// ============================================================
+// BOUTIQUE / WISHLIST FEATURE - DISABLED (commented out)
+// To re-enable: uncomment the storage key below and the
+// localStorage initialization + persistence useEffect.
+// ============================================================
+// const WISHLIST_STORAGE_KEY = 'e-commerce-wishlist';
 
 export const useWishlist = () => useContext(WishlistContext);
 
 export const WishlistProvider = ({ children }) => {
+  // ============================================================
+  // BOUTIQUE / WISHLIST FEATURE - DISABLED (commented out)
+  // To re-enable: uncomment the localStorage initialization below
+  // ============================================================
+  // const [wishlistItems, setWishlistItems] = useState(() => {
+  //   try {
+  //     const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
+  //     return stored ? JSON.parse(stored) : [];
+  //   } catch (error) {
+  //     return [];
+  //   }
+  // });
+
   // Wishlist state is in-memory only (no localStorage persistence)
   const [wishlistItems, setWishlistItems] = useState([]);
+
+  // ============================================================
+  // BOUTIQUE / WISHLIST FEATURE - DISABLED (commented out)
+  // To re-enable: uncomment this useEffect to persist wishlist to localStorage
+  // ============================================================
+  // useEffect(() => {
+  //   localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlistItems));
+  // }, [wishlistItems]);
 
   const addToWishlist = useCallback((product) => {
     setWishlistItems(prev => {

@@ -6,6 +6,7 @@ import Sports from '@/components/home/Sports';
 import Footer from '@/components/home/Footer';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import AuthAwareCTA from '@/components/AuthAwareCTA';
 import { Star, Users, Trophy, Activity, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
@@ -188,11 +189,9 @@ const HomePage = () => {
                Ne laissez pas le talent de votre enfant inexploité. Rejoignez l'élite sportive de Béja dès aujourd'hui.
              </p>
              <div className="flex flex-col sm:flex-row justify-center gap-4">
-               <Link to="/contact">
-                 <Button className="bg-black hover:bg-gray-900 text-white px-10 py-7 text-lg font-bold rounded-full w-full sm:w-auto shadow-xl hover:scale-105 transition-transform">
-                   Inscrire mon enfant
-                 </Button>
-               </Link>
+               <AuthAwareCTA to="/children" className="bg-black hover:bg-gray-900 text-white px-10 py-7 text-lg font-bold rounded-full w-full sm:w-auto shadow-xl hover:scale-105 transition-transform">
+                 Inscrire mon enfant
+               </AuthAwareCTA>
                <Link to="/schedule">
                  <Button variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-red-600 px-10 py-7 text-lg font-bold rounded-full w-full sm:w-auto transition-colors">
                    Voir le planning

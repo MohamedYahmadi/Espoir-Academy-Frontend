@@ -1,3 +1,9 @@
+// ============================================================
+// BOUTIQUE FEATURE - DISABLED (commented out)
+// This file is preserved for future re-enabling.
+// To re-enable: uncomment the ProductDetailPage import + route in App.jsx
+// and the "Boutique" nav links in Header.jsx.
+// ============================================================
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams, Link, useNavigate } from 'react-router-dom';

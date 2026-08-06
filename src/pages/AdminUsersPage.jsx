@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import { getUsers, updateUser, deactivateUser } from '@/api/AcademyApi';
+import { getUsers, updateUser, deactivateUser, getUserById, createChild, updateChild, deleteChild } from '@/api/AcademyApi';
 import { useAuth } from '@/hooks/useAuth';
 import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
-import { Users, ArrowLeft, Edit, Trash2, Search } from 'lucide-react';
+import { Users, ArrowLeft, Edit, Trash2, Search, Plus, Calendar, FileText, Upload } from 'lucide-react';
 
 const AdminUsersPage = () => {
   const [users, setUsers] = useState([]);
@@ -25,6 +25,28 @@ const AdminUsersPage = () => {
   });
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Children management state
+  const [children, setChildren] = useState([]);
+  const [loadingChildren, setLoadingChildren] = useState(false);
+  const [showChildForm, setShowChildForm] = useState(false);
+  const [editingChild, setEditingChild] = useState(null);
+  
+  const [childFormData, setChildFormData] = useState({
+    firstName: '',
+    lastName: '',
+    dateOfBirth: '',
+    gender: 'Male',
+    medicalNotes: '',
+  });
+  
+  const [childFiles, setChildFiles] = useState({
+    photo: null,
+    birthCertificate: null,
+    medicalCertificate: null,
+  });
+  
+  const [isSubmittingChild, setIsSubmittingChild] = useState(false);
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -65,6 +87,25 @@ const AdminUsersPage = () => {
     }
   };
 
+  const fetchChildren = async (userId) => {
+    setLoadingChildren(true);
+    try {
+      const res = await getUserById(userId);
+      console.log('fetchChildren response:', res);
+      const childrenList = res.data?.children || res.children || (Array.isArray(res.data) ? res.data : []);
+      setChildren(childrenList);
+    } catch (error) {
+      console.error('Error fetching children:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les enfants du parent.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingChildren(false);
+    }
+  };
+
   const handleEdit = (user) => {
     setEditingUser(user);
     setFormData({
@@ -73,6 +114,95 @@ const AdminUsersPage = () => {
       phone: user.phone || '',
       isActive: user.isActive,
     });
+    fetchChildren(user._id);
+  };
+
+  const handleChildEdit = (child) => {
+    setEditingChild(child);
+    setChildFormData({
+      firstName: child.firstName || '',
+      lastName: child.lastName || '',
+      dateOfBirth: child.dateOfBirth ? child.dateOfBirth.split('T')[0] : '',
+      gender: child.gender || 'Male',
+      medicalNotes: child.medicalNotes || '',
+    });
+    setChildFiles({
+      photo: null,
+      birthCertificate: null,
+      medicalCertificate: null,
+    });
+    setShowChildForm(true);
+  };
+
+  const handleChildAdd = () => {
+    setEditingChild(null);
+    setChildFormData({
+      firstName: '',
+      lastName: '',
+      dateOfBirth: '',
+      gender: 'Male',
+      medicalNotes: '',
+    });
+    setChildFiles({
+      photo: null,
+      birthCertificate: null,
+      medicalCertificate: null,
+    });
+    setShowChildForm(true);
+  };
+
+  const handleChildDelete = async (childId, name) => {
+    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer le profil de ${name} ?`)) {
+      return;
+    }
+    try {
+      await deleteChild(childId);
+      toast({ title: "Profil de l'enfant supprimé" });
+      fetchChildren(editingUser._id);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de supprimer l'enfant.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleChildFormSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmittingChild(true);
+    try {
+      const data = new FormData();
+      data.append('firstName', childFormData.firstName);
+      data.append('lastName', childFormData.lastName);
+      data.append('dateOfBirth', childFormData.dateOfBirth);
+      data.append('gender', childFormData.gender);
+      data.append('medicalNotes', childFormData.medicalNotes);
+      data.append('parentId', editingUser._id);
+
+      if (childFiles.photo) data.append('photo', childFiles.photo);
+      if (childFiles.birthCertificate) data.append('birthCertificate', childFiles.birthCertificate);
+      if (childFiles.medicalCertificate) data.append('medicalCertificate', childFiles.medicalCertificate);
+
+      if (editingChild) {
+        await updateChild(editingChild._id, data);
+        toast({ title: "Enfant modifié avec succès" });
+      } else {
+        await createChild(data);
+        toast({ title: "Enfant ajouté avec succès" });
+      }
+      setShowChildForm(false);
+      setEditingChild(null);
+      fetchChildren(editingUser._id);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible d'enregistrer l'enfant.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingChild(false);
+    }
   };
 
   const handleDeactivate = async (id, fullName) => {
@@ -167,9 +297,10 @@ const AdminUsersPage = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Modifier l'Utilisateur</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">Nom Complet</Label>
+                    <Label htmlFor="fullName">Nom complet (ex: Jean Dupont/جون دوبون)</Label>
                     <Input
                       id="fullName"
+                      placeholder="Jean Dupont/جون دوبون"
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                       required
@@ -216,7 +347,207 @@ const AdminUsersPage = () => {
                     </Button>
                   </div>
                 </form>
+
+                {/* Children section */}
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">Enfants associés</h3>
+                      <p className="text-sm text-gray-500">Gérez les profils des enfants de ce parent</p>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleChildAdd}
+                      className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-2"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Ajouter un Enfant
+                    </Button>
+                  </div>
+
+                  {loadingChildren ? (
+                    <div className="text-center py-6">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-2"></div>
+                      <p className="text-gray-500 text-sm">Chargement des enfants...</p>
+                    </div>
+                  ) : children.length === 0 ? (
+                    <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                      <p className="text-gray-500 text-sm">Aucun enfant enregistré pour ce parent.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {children.map((child) => (
+                        <div key={child._id} className="bg-gray-50 rounded-xl p-4 border border-gray-200 flex flex-col justify-between">
+                          <div>
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <h4 className="font-semibold text-gray-900">{child.firstName} {child.lastName}</h4>
+                                <p className="text-xs text-gray-500">Né(e) le: {child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString('fr-FR') : '-'}</p>
+                                <p className="text-xs text-gray-500">Genre: {child.gender === 'Male' ? 'Garçon' : 'Fille'}</p>
+                              </div>
+                              <div className="flex gap-1">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleChildEdit(child)}
+                                  className="text-blue-600 hover:text-blue-700 h-8 w-8"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleChildDelete(child._id, `${child.firstName} ${child.lastName}`)}
+                                  className="text-red-600 hover:text-red-700 h-8 w-8"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                            {child.medicalNotes && (
+                              <p className="text-xs text-gray-600 bg-yellow-50 p-2 rounded border border-yellow-100 mt-2">
+                                <strong>Notes médicales:</strong> {child.medicalNotes}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </motion.div>
+            )}
+
+            {showChildForm && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto"
+                >
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                    {editingChild ? "Modifier l'Enfant" : "Ajouter un Enfant"}
+                  </h3>
+                  <form onSubmit={handleChildFormSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="childFirstName">Prénom (ex: Jean/جون)</Label>
+                        <Input
+                          id="childFirstName"
+                          value={childFormData.firstName}
+                          onChange={(e) => setChildFormData({ ...childFormData, firstName: e.target.value })}
+                          placeholder="Jean/جون"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="childLastName">Nom (ex: Dupont/دوبون)</Label>
+                        <Input
+                          id="childLastName"
+                          value={childFormData.lastName}
+                          onChange={(e) => setChildFormData({ ...childFormData, lastName: e.target.value })}
+                          placeholder="Dupont/دوبون"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="childDOB">Date de naissance</Label>
+                        <Input
+                          id="childDOB"
+                          type="date"
+                          value={childFormData.dateOfBirth}
+                          onChange={(e) => setChildFormData({ ...childFormData, dateOfBirth: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="childGender">Genre</Label>
+                        <select
+                          id="childGender"
+                          value={childFormData.gender}
+                          onChange={(e) => setChildFormData({ ...childFormData, gender: e.target.value })}
+                          className="w-full h-10 px-3 border border-gray-300 rounded-md focus:border-red-500 focus:ring-red-500 text-sm font-medium"
+                          required
+                        >
+                          <option value="Male">Garçon</option>
+                          <option value="Female">Fille</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="childMedical">Notes médicales (optionnel)</Label>
+                      <textarea
+                        id="childMedical"
+                        value={childFormData.medicalNotes}
+                        onChange={(e) => setChildFormData({ ...childFormData, medicalNotes: e.target.value })}
+                        placeholder="Allergies, conditions médicales, etc."
+                        className="w-full min-h-[80px] p-3 border border-gray-300 rounded-md focus:border-red-500 focus:ring-red-500 text-sm"
+                      />
+                    </div>
+
+                    <div className="space-y-3 pt-4 border-t border-gray-100">
+                      <h4 className="font-semibold text-sm text-gray-900">Documents (optionnels)</h4>
+                      
+                      <div className="space-y-1">
+                        <Label htmlFor="childPhoto" className="text-xs">Photo d'identité</Label>
+                        <Input
+                          id="childPhoto"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setChildFiles({ ...childFiles, photo: e.target.files[0] })}
+                          className="h-10 text-xs"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label htmlFor="childBC" className="text-xs">Acte de naissance</Label>
+                        <Input
+                          id="childBC"
+                          type="file"
+                          accept="image/*,.pdf"
+                          onChange={(e) => setChildFiles({ ...childFiles, birthCertificate: e.target.files[0] })}
+                          className="h-10 text-xs"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label htmlFor="childMC" className="text-xs">Certificat médical</Label>
+                        <Input
+                          id="childMC"
+                          type="file"
+                          accept="image/*,.pdf"
+                          onChange={(e) => setChildFiles({ ...childFiles, medicalCertificate: e.target.files[0] })}
+                          className="h-10 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-6 border-t border-gray-100">
+                      <Button
+                        type="submit"
+                        disabled={isSubmittingChild}
+                        className="flex-grow bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        {isSubmittingChild ? "Enregistrement..." : "Enregistrer"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowChildForm(false)}
+                        className="flex-grow"
+                      >
+                        Annuler
+                      </Button>
+                    </div>
+                  </form>
+                </motion.div>
+              </div>
             )}
 
             {/* Users List */}

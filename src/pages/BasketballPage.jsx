@@ -4,8 +4,7 @@ import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
 import { motion } from 'framer-motion';
 import { Check, Crosshair, Zap, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import AuthAwareCTA from '@/components/AuthAwareCTA';
 
 const BasketballPage = () => {
   return (
@@ -36,11 +35,9 @@ const BasketballPage = () => {
                         HOOPS
                     </motion.h1>
                     <p className="text-2xl text-red-500 font-bold uppercase tracking-widest mb-8">Le Rythme du Jeu</p>
-                    <Link to="/contact">
-                        <Button className="bg-white text-black hover:bg-gray-200 font-bold px-8 py-6 text-lg rounded-none skew-x-[-10deg]">
-                            REJOINDRE L'ÉQUIPE
-                        </Button>
-                    </Link>
+                    <AuthAwareCTA to="/children" className="bg-white text-black hover:bg-gray-200 font-bold px-8 py-6 text-lg rounded-none skew-x-[-10deg]">
+                        REJOINDRE L'ÉQUIPE
+                    </AuthAwareCTA>
                 </div>
             </div>
         </div>

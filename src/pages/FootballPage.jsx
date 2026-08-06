@@ -5,6 +5,7 @@ import Footer from '@/components/home/Footer';
 import { motion } from 'framer-motion';
 import { Check, Trophy, Calendar, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import AuthAwareCTA from '@/components/AuthAwareCTA';
 import { Link } from 'react-router-dom';
 
 const FootballPage = () => {
@@ -53,11 +54,9 @@ const FootballPage = () => {
                         Une méthodologie professionnelle inspirée des plus grands centres de formation européens, adaptée au talent local.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link to="/contact">
-                            <Button className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg rounded-full w-full sm:w-auto">
-                                Réserver une séance d'essai
-                            </Button>
-                        </Link>
+                        <AuthAwareCTA to="/contact" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg rounded-full w-full sm:w-auto">
+                            Réserver une séance d'essai
+                        </AuthAwareCTA>
                     </div>
                 </div>
             </div>

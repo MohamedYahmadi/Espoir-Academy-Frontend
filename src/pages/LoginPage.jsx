@@ -20,13 +20,13 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const from = location.state?.from?.pathname || '/dashboard';
+
   useEffect(() => {
     if (user) {
-      navigate(user.role === 'admin' ? '/admin-secret-backoffice' : '/dashboard');
+      navigate(user.role === 'admin' ? '/admin-secret-backoffice' : from, { replace: true });
     }
-  }, [user, navigate]);
-
-  const from = location.state?.from?.pathname || '/dashboard';
+  }, [user, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,10 +41,6 @@ const LoginPage = () => {
           ? "Bienvenue sur votre espace administrateur."
           : "Bienvenue sur votre espace parent.",
       });
-      // Navigate after a short delay to ensure state is updated
-      setTimeout(() => {
-        navigate(isAdmin ? '/admin-secret-backoffice' : from, { replace: true });
-      }, 300);
     } catch (error) {
       toast({
         title: "Erreur de connexion",

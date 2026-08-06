@@ -10,6 +10,16 @@ import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
 import { ArrowLeft, CheckCircle, XCircle, Users } from 'lucide-react';
 
+const DAY_LABELS = {
+  Monday: 'Lundi',
+  Tuesday: 'Mardi',
+  Wednesday: 'Mercredi',
+  Thursday: 'Jeudi',
+  Friday: 'Vendredi',
+  Saturday: 'Samedi',
+  Sunday: 'Dimanche',
+};
+
 const AdminEnrollmentsPage = () => {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -205,6 +215,11 @@ const AdminEnrollmentsPage = () => {
                             <div className="text-sm text-gray-900">
                               {enrollment.sportId?.name}
                             </div>
+                            {enrollment.schedule?.day && (
+                              <div className="text-xs text-gray-500">
+                                {DAY_LABELS[enrollment.schedule.day] || enrollment.schedule.day} · {enrollment.schedule.startTime} - {enrollment.schedule.endTime}
+                              </div>
+                            )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(enrollment.status)}`}>
