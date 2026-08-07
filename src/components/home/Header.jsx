@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 // ============================================================
 // BOUTIQUE / CART FEATURE - DISABLED (commented out)
 // To re-enable: uncomment the useCart import and the cart-related
@@ -20,6 +20,7 @@ const Header = () => {
   const [sports, setSports] = useState([]);
   const dropdownRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
   // ============================================================
   // BOUTIQUE / CART FEATURE - DISABLED (commented out)
   // To re-enable: uncomment the useCart hook usage below
@@ -38,6 +39,13 @@ const Header = () => {
     } catch (error) {
       console.error('Failed to load sports:', error);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    navigate('/');
   };
 
   // ============================================================
@@ -204,7 +212,7 @@ const Header = () => {
                             Contact
                           </Link>
                           <button 
-                            onClick={() => { logout(); setIsMenuOpen(false); }}
+                            onClick={handleLogout}
                             className="flex items-center gap-3 w-full text-left px-5 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
                           >
                             <LogOut className="h-5 w-5" />
@@ -302,7 +310,7 @@ const Header = () => {
                     {user?.role === 'admin' && (
                       <Link to="/admin-secret-backoffice" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-800 hover:bg-red-50 hover:text-red-600 font-medium py-3 px-4 rounded-lg block transition-colors">Administration</Link>
                     )}
-                    <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="text-red-600 hover:bg-red-50 font-medium py-3 px-4 rounded-lg block transition-colors text-left w-full">Déconnexion</button>
+                    <button onClick={handleLogout} className="text-red-600 hover:bg-red-50 font-medium py-3 px-4 rounded-lg block transition-colors text-left w-full">Déconnexion</button>
                   </>
                 ) : (
                   <>

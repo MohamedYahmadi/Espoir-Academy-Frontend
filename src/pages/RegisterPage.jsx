@@ -79,13 +79,12 @@ const RegisterPage = () => {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-gray-700 font-medium">Nom complet (ex: Jean Dupont/جون دوبون)</Label>
+                  <Label htmlFor="fullName" className="text-gray-700 font-medium">Nom complet</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <Input
                       id="fullName"
                       type="text"
-                      placeholder="Jean Dupont/جون دوبون"
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                       className="pl-10 h-12 border-gray-300 focus:border-red-500 focus:ring-red-500"

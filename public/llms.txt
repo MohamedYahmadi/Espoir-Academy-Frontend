@@ -1,0 +1,30 @@
+## Pages
+- [- Espoirs Academy](/childdetail): No description available
+- [| ESPOIRS ACADEMY](/productdetail): No description available
+- [À Propos - ESPOIRS ACADEMY](/about): Découvrez l
+- [Administration - Espoirs Academy](/admindashboard): Panneau d
+- [Administration - ESPOIRS ACADEMY](/admin): Panneau d
+- [Boutique Officielle - ESPOIRS ACADEMY](/store): Équipez-vous comme un pro. Maillots, équipements d
+- [Changer le mot de passe - Espoirs Academy](/changepassword): Modifiez votre mot de passe
+- [Connexion - Espoirs Academy](/login): Connectez-vous à votre compte parent Espoirs Academy
+- [Contact & Localisation - ESPOIRS ACADEMY](/contact): Prenez contact avec nous pour inscrire votre enfant ou poser vos questions. Situé au cœur de Béja.
+- [Enregistrer un enfant - Espoirs Academy](/registerchild): Ajoutez le profil de votre enfant
+- [Gestion des Inscriptions - Administration](/adminenrollments): Gérer les inscriptions
+- [Gestion des sports - Administration](/adminsports): Gestion des sports
+- [Gestion des Utilisateurs - Administration](/adminusers): Gérer les utilisateurs
+- [Gestion du Planning - Administration](/adminschedules): Gérer le planning des entraînements
+- [Inscription - Espoirs Academy](/enrollments): Inscrivez votre enfant à un sport
+- [Inscription - Espoirs Academy](/register): Créez votre compte parent Espoirs Academy
+- [Mes Enfants - Espoirs Academy](/children): Gérez les profils de vos enfants
+- [Mes Paiements - Espoirs Academy](/payments): Historique de vos paiements
+- [Modifier   - Espoirs Academy](/editchild): No description available
+- [Mon Profil - Espoirs Academy](/profile): Gérez votre profil
+- [Mot de passe oublié - Espoirs Academy](/forgotpassword): Réinitialisez votre mot de passe Espoirs Academy
+- [Paiement Réussi - ESPOIRS ACADEMY](/success): No description available
+- [Planning Hebdomadaire - ESPOIRS ACADEMY](/schedule): Consultez les horaires détaillés des entraînements pour le weekend à Espoirs Academy Béja.
+- [Programme Basketball - ESPOIRS ACADEMY](/basketball): Maîtrisez les fondamentaux du basketball avec nos experts. Dribble, shoot, défense et jeu d
+- [Programme Football - ESPOIRS ACADEMY](/football): Formation footballistique d
+- [Programme Tennis - ESPOIRS ACADEMY](/tennis): L
+- [Réinitialiser le mot de passe - Espoirs Academy](/resetpassword): Choisissez un nouveau mot de passe
+- [Tableau de Bord - Espoirs Academy](/dashboard): Espace parent - Gérez vos enfants et leurs inscriptions
+- [Tarifs & Inscriptions - Espoirs Academy](/pricing): Découvrez nos programmes d

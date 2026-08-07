@@ -297,10 +297,9 @@ const AdminUsersPage = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Modifier l'Utilisateur</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">Nom complet (ex: Jean Dupont/جون دوبون)</Label>
+                    <Label htmlFor="fullName">Nom complet</Label>
                     <Input
                       id="fullName"
-                      placeholder="Jean Dupont/جون دوبون"
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                       required
@@ -433,22 +432,20 @@ const AdminUsersPage = () => {
                   <form onSubmit={handleChildFormSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="childFirstName">Prénom (ex: Jean/جون)</Label>
+                        <Label htmlFor="childFirstName">Prénom</Label>
                         <Input
                           id="childFirstName"
                           value={childFormData.firstName}
                           onChange={(e) => setChildFormData({ ...childFormData, firstName: e.target.value })}
-                          placeholder="Jean/جون"
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="childLastName">Nom (ex: Dupont/دوبون)</Label>
+                        <Label htmlFor="childLastName">Nom</Label>
                         <Input
                           id="childLastName"
                           value={childFormData.lastName}
                           onChange={(e) => setChildFormData({ ...childFormData, lastName: e.target.value })}
-                          placeholder="Dupont/دوبون"
                           required
                         />
                       </div>

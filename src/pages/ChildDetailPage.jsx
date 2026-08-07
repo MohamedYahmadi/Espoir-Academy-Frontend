@@ -177,7 +177,7 @@ const ChildDetailPage = () => {
                 <div className="text-center py-12">
                   <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-600 mb-4">Aucune inscription pour le moment.</p>
-                  <Link to="/schedule">
+                  <Link to="/pricing">
                     <Button className="bg-red-600 hover:bg-red-700 text-white">
                       Voir les sports disponibles
                     </Button>

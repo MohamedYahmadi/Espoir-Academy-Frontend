@@ -185,12 +185,11 @@ const AdminSportsPage = () => {
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nom du sport (ex: tennis/تنس)</Label>
+                    <Label htmlFor="name">Nom du sport</Label>
                     <Input
                       id="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="tennis/تنس"
                       required
                     />
                   </div>
